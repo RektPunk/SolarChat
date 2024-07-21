@@ -136,7 +136,7 @@ def navbar():
     return rx.box(
         rx.hstack(
             rx.hstack(
-                rx.avatar(fallback="SC", variant="solid"),
+                rx.avatar(src="avatar.png"),
                 rx.heading("SolarChat"),
                 rx.desktop_only(
                     rx.badge(
