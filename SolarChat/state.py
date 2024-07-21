@@ -20,7 +20,7 @@ class ChatState(rx.State):
 
     api_key: str = ""
     prompt: str = "You are a friendly chatbot named 'Solar'. Respond in markdown."
-    
+
     # A dict from the chat name to the list of questions and answers.
     chats: dict[str, list[QA]] = DEFAULT_CHATS
 
@@ -35,7 +35,7 @@ class ChatState(rx.State):
 
     # The name of the new chat.
     new_chat_name: str = ""
-    
+
     def is_valid_setting(self) -> bool:
         return self.api_key != "" and self.prompt != ""
 
@@ -113,15 +113,14 @@ class ChatState(rx.State):
 
         # Start a new session to answer the question.
         client = OpenAI(
-            api_key=self.api_key, 
-            base_url="https://api.upstage.ai/v1/solar"
+            api_key=self.api_key, base_url="https://api.upstage.ai/v1/solar"
         )
         session = client.chat.completions.create(
             model="solar-1-mini-chat",
             messages=messages,
             stream=True,
         )
-        
+
         # Stream the results, yielding after every word.
         for item in session:
             if hasattr(item.choices[0].delta, "content"):
@@ -134,6 +133,6 @@ class ChatState(rx.State):
                     self.chats[self.current_chat][-1].answer += answer_text
                 self.chats = self.chats
                 yield
-        
+
         # Toggle the processing flag.
         self.processing = False

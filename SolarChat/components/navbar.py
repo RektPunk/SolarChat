@@ -57,6 +57,7 @@ def sidebar(trigger) -> rx.Component:
         direction="left",
     )
 
+
 def settingbar(trigger) -> rx.Component:
     """The sidebar component."""
     return rx.drawer.root(
@@ -68,7 +69,6 @@ def settingbar(trigger) -> rx.Component:
                     rx.heading("Settings", color=rx.color("mauve", 11)),
                     rx.divider(),
                     rx.heading("API KEY", color=rx.color("mauve", 11), size="3"),
-                    
                     rx.input(
                         name="api_key",
                         default_value=ChatState.api_key,
@@ -82,7 +82,10 @@ def settingbar(trigger) -> rx.Component:
                         value=ChatState.prompt,
                         on_change=ChatState.set_prompt,
                     ),
-                    rx.button("Apply", on_click=rx.toast.success("Succesfully Applied!"),),
+                    rx.button(
+                        "Apply",
+                        on_click=rx.toast.success("Succesfully Applied!"),
+                    ),
                     align_items="stretch",
                     width="100%",
                 ),
