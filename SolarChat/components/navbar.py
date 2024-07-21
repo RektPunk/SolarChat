@@ -82,6 +82,11 @@ def settingbar(trigger) -> rx.Component:
                         value=ChatState.prompt,
                         on_change=ChatState.set_prompt,
                     ),
+                    rx.radio(
+                        ["solar-1-mini-chat", "solar-1-mini-chat-ja"],
+                        default_value="solar-1-mini-chat",
+                        on_change=ChatState.set_chat_model,
+                    ),
                     rx.button(
                         "Apply",
                         on_click=rx.toast.success("Succesfully Applied!"),

@@ -1,4 +1,3 @@
-import os
 import re
 import reflex as rx
 from openai import OpenAI
@@ -21,6 +20,7 @@ class ChatState(rx.State):
 
     api_key: str = ""
     prompt: str = "You are a friendly chatbot named 'Solar'. Respond in markdown."
+    chat_model: str = "solar-1-mini-chat"
 
     # A dict from the chat name to the list of questions and answers.
     chats: dict[str, list[QA]] = DEFAULT_CHATS
@@ -118,7 +118,7 @@ class ChatState(rx.State):
         )
         try:
             session = client.chat.completions.create(
-                model="solar-1-mini-chat",
+                model=self.chat_model,
                 messages=messages,
                 stream=True,
             )
@@ -129,7 +129,7 @@ class ChatState(rx.State):
                     if answer_text is not None:
                         self.chats[self.current_chat][-1].answer += answer_text
                     else:
-                        answer_text = "I think it's a difficult question to answer. Sorry, please ask another question."
+                        answer_text = ""
                         self.chats[self.current_chat][-1].answer += answer_text
                     self.chats = self.chats
                     yield
@@ -140,7 +140,6 @@ class ChatState(rx.State):
                 answer_text = "It seems that there is a connection issue. The main reason is that your API key is incorrect. Please enter the correct API key in the settings above and try again."
             self.chats[self.current_chat][-1].answer += answer_text
 
-        # Stream the results, yielding after every word.
 
         # Toggle the processing flag.
         self.processing = False
