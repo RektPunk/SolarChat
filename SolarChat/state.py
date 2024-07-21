@@ -1,4 +1,5 @@
 import os
+import re
 import reflex as rx
 from openai import OpenAI
 
@@ -115,24 +116,31 @@ class ChatState(rx.State):
         client = OpenAI(
             api_key=self.api_key, base_url="https://api.upstage.ai/v1/solar"
         )
-        session = client.chat.completions.create(
-            model="solar-1-mini-chat",
-            messages=messages,
-            stream=True,
-        )
+        try:
+            session = client.chat.completions.create(
+                model="solar-1-mini-chat",
+                messages=messages,
+                stream=True,
+            )
+            for item in session:
+                if hasattr(item.choices[0].delta, "content"):
+                    answer_text = item.choices[0].delta.content
+                    # Ensure answer_text is not None before concatenation
+                    if answer_text is not None:
+                        self.chats[self.current_chat][-1].answer += answer_text
+                    else:
+                        answer_text = "I think it's a difficult question to answer. Sorry, please ask another question."
+                        self.chats[self.current_chat][-1].answer += answer_text
+                    self.chats = self.chats
+                    yield
+        except:
+            if re.search(r"[ㄱ-ㅎ가-힣]", messages[-1]["content"]):
+                answer_text = "연결에 문제가 있는 것 같습니다. 주된 이유는 API 키가 잘못되었기 때문입니다. 설정에서 올바른 API 키를 입력하고 다시 시도해 주세요."
+            else:
+                answer_text = "It seems that there is a connection issue. The main reason is that your API key is incorrect. Please enter the correct API key in the settings above and try again."
+            self.chats[self.current_chat][-1].answer += answer_text
 
         # Stream the results, yielding after every word.
-        for item in session:
-            if hasattr(item.choices[0].delta, "content"):
-                answer_text = item.choices[0].delta.content
-                # Ensure answer_text is not None before concatenation
-                if answer_text is not None:
-                    self.chats[self.current_chat][-1].answer += answer_text
-                else:
-                    answer_text = "I think it's a difficult question to answer. Sorry, please ask another question."
-                    self.chats[self.current_chat][-1].answer += answer_text
-                self.chats = self.chats
-                yield
 
         # Toggle the processing flag.
         self.processing = False
