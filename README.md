@@ -14,5 +14,6 @@ pip install -r requirements.txt
 ## Usage
 "SolarChat" is developed with using [Reflex](https://reflex.dev/), and here's how to get started:
 ```bash
+reflex init
 reflex run
 ```
