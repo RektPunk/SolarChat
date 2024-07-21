@@ -140,6 +140,5 @@ class ChatState(rx.State):
                 answer_text = "It seems that there is a connection issue. The main reason is that your API key is incorrect. Please enter the correct API key in the settings above and try again."
             self.chats[self.current_chat][-1].answer += answer_text
 
-
         # Toggle the processing flag.
         self.processing = False

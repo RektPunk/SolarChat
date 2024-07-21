@@ -7,7 +7,7 @@ from SolarChat.components import chat, navbar
 def index() -> rx.Component:
     """The main app."""
     return rx.chakra.vstack(
-        navbar(),
+        navbar.navbar(),
         chat.chat(),
         chat.action_bar(),
         background_color=rx.color("mauve", 1),

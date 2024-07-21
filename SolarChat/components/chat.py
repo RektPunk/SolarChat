@@ -84,7 +84,7 @@ def action_bar() -> rx.Component:
                         rx.button(
                             rx.cond(
                                 ChatState.processing,
-                                loading_icon(height="1em"),
+                                loading_icon.loading_icon(height="1em"),
                                 rx.text("Send"),
                             ),
                             type="submit",
