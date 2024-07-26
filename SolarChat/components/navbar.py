@@ -68,7 +68,9 @@ def settingbar(trigger) -> rx.Component:
                 rx.vstack(
                     rx.heading("Settings", color=rx.color("mauve", 11)),
                     rx.divider(),
-                    rx.markdown("This app is created to test Solar LLM. Please visit to the [Upstage AI](https://developers.upstage.ai/) for information on API keys and other various APIs."),
+                    rx.markdown(
+                        "This app is created to test Solar LLM. Please visit to the [Upstage AI](https://developers.upstage.ai/) for information on API keys and other various APIs."
+                    ),
                     rx.divider(),
                     rx.heading("API KEY", color=rx.color("mauve", 11), size="3"),
                     rx.input(
