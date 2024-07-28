@@ -79,12 +79,12 @@ class ChatState(rx.State):
         if question == "":
             return
 
-        model = self.openai_process_question
+        model = self.solar_process_question
 
         async for value in model(question):
             yield value
 
-    async def openai_process_question(self, question: str):
+    async def solar_process_question(self, question: str):
         """Get the response from the API.
 
         Args:
