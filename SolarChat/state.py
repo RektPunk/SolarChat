@@ -8,6 +8,7 @@ class QA(rx.Base):
 
     question: str
     answer: str
+    is_valid: bool
 
 
 DEFAULT_CHATS = {
@@ -92,7 +93,7 @@ class ChatState(rx.State):
         """
 
         # Add the question to the list of questions.
-        qa = QA(question=question, answer="")
+        qa = QA(question=question, answer="", is_valid=False)
         self.chats[self.current_chat].append(qa)
 
         # Clear the input and start the processing.
@@ -107,13 +108,10 @@ class ChatState(rx.State):
             }
         ]
         for qa in self.chats[self.current_chat]:
-            messages.append({"role": "user", "content": qa.question})
-            messages.append({"role": "assistant", "content": qa.answer})
+            if qa.is_valid:
+                messages.append({"role": "user", "content": qa.question})
+                messages.append({"role": "assistant", "content": qa.answer})
 
-        # Remove the last mock answer.
-        messages = messages[:-1]
-
-        # Start a new session to answer the question.
         client = OpenAI(
             api_key=self.api_key, base_url="https://api.upstage.ai/v1/solar"
         )
@@ -126,19 +124,12 @@ class ChatState(rx.State):
             for item in session:
                 if hasattr(item.choices[0].delta, "content"):
                     answer_text = item.choices[0].delta.content
-                    # Ensure answer_text is not None before concatenation
                     if answer_text is not None:
                         self.chats[self.current_chat][-1].answer += answer_text
-                    else:
-                        answer_text = ""
-                        self.chats[self.current_chat][-1].answer += answer_text
-                    self.chats = self.chats
                     yield
-        except:
-            if re.search(r"[ㄱ-ㅎ가-힣]", messages[-1]["content"]):
-                answer_text = "연결에 문제가 있는 것 같습니다. 주된 이유는 API 키가 잘못되었기 때문입니다. 설정에서 올바른 API 키를 입력하고 다시 시도해 주세요."
-            else:
-                answer_text = "It seems that there is a connection issue. The main reason is that your API key is incorrect. Please enter the correct API key in the settings above and try again."
+            self.chats[self.current_chat][-1].is_valid = True
+        except Exception as e:
+            answer_text = str(e)
             self.chats[self.current_chat][-1].answer += answer_text
 
         # Toggle the processing flag.
