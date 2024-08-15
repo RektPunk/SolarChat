@@ -1,6 +1,5 @@
-"""The main Chat app."""
-
 import reflex as rx
+
 from SolarChat.components import chat, navbar
 
 

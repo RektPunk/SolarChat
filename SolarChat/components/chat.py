@@ -3,7 +3,6 @@ import reflex as rx
 from SolarChat.components import loading_icon
 from SolarChat.state import QA, ChatState
 
-
 message_style = dict(
     display="inline-block",
     padding="1em",
